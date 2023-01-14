@@ -214,4 +214,4 @@ Up to this point, we have been working with a controller that has been relaxed t
 
 ## Authors ##
 
-Thanks to Fotokite for the initial development of the project code and simulator.
+Thanks to [Fotokite](https://fotokite.com/) for the initial development of the project code and simulator.
