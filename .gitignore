@@ -25,3 +25,9 @@ bld/
 
 # manual cmake build ignores
 build/
+
+# Cmake Build Debug
+cmake-build-debug/
+
+# xcode project files
+project/
