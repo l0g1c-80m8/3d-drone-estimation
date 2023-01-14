@@ -5,7 +5,7 @@ Welcome to the estimation project.  In this project, you will be developing the 
 This README is broken down into the following sections:
 
  - [Setup](#setup) - the environment and code setup required to get started and a brief overview of the project structure
- - [The Tasks](#the-tasks) - the tasks you will need to complete for the project
+ - [The Scenarios](#the-scenarios) - the scenarios that test the performance of the controller and estimators
 
 
 ## Setup ##
@@ -41,7 +41,7 @@ For this project, you will be interacting with a few more files than before.
 
 #### `config` Directory ####
 
-In the `config` directory, in addition to finding the configuration files for your controller and your estimator, you will also see configuration files for each of the simulations.  For this project, you will be working with simulations 06 through 11 and you may find it insightful to take a look at the configuration for the simulation.
+In the `config` directory, in addition to finding the configuration files for your controller and your estimator, you will also see configuration files for each of the simulations. In this project, we address scenarios 06 through 11 in the simulation.
 
 As an example, if we look through the configuration file for scenario 07, we see the following parameters controlling the sensor:
 
@@ -56,22 +56,20 @@ SimIMU.GyroStd = 0,0,0
 This configuration tells us that the simulator is only using an IMU and the sensor data will have no noise.  You will notice that for each simulator these parameters will change slightly as additional sensors are being used and the noise behavior of the sensors change.
 
 
-## The Tasks ##
+## The Scenarios ##
 
-Once again, you will be building up your estimator in pieces.  At each step, there will be a set of success criteria that will be displayed both in the plots and in the terminal output to help you along the way.
+Outline:
 
-Project outline:
-
- - [Step 1: Sensor Noise](#step-1-sensor-noise)
- - [Step 2: Attitude Estimation](#step-2-attitude-estimation)
- - [Step 3: Prediction Step](#step-3-prediction-step)
- - [Step 4: Magnetometer Update](#step-4-magnetometer-update)
- - [Step 5: Closed Loop + GPS Update](#step-5-closed-loop--gps-update)
- - [Step 6: Adding Your Controller](#step-6-adding-your-controller)
+ - [Scenario 6: Sensor Noise](#scenario-6-sensor-noise)
+ - [Scenario 7: Attitude Estimation](#scenario-7-attitude-estimation)
+ - [Scenario 8: Prediction Step](#scenario-8-prediction-step)
+ - [Scenario 9: Magnetometer Update](#scenario-9-magnetometer-update)
+ - [Scenario 10: Closed Loop + GPS Update](#scenario-10-closed-loop--gps-update)
+ - [Scenario 11: Adding Your Controller](#scenario-11-adding-your-controller)
 
 
 
-### Step 1: Sensor Noise ###
+### Scenario 6: Sensor Noise ###
 
 For the controls project, the simulator was working with a perfect set of sensors, meaning none of the sensors had any noise.  The first step to adding additional realism to the problem, and developing an estimator, is adding noise to the quad's sensors.  For the first step, you will collect some simulated noisy sensor data and estimate the standard deviation of the quad's sensor.
 
@@ -90,7 +88,7 @@ For the controls project, the simulator was working with a perfect set of sensor
 NOTE: Your answer should match the settings in `SimulatedSensors.txt`, where you can also grab the simulated noise parameters for all the other sensors.
 
 
-### Step 2: Attitude Estimation ###
+### Scenario 7: Attitude Estimation ###
 
 Now let's look at the first step to our state estimation: including information from our IMU.  In this step, you will be improving the complementary filter-type attitude filter with a better rate gyro attitude integration scheme.
 
@@ -110,7 +108,7 @@ In the screenshot above the attitude estimation using linear scheme (left) and u
 **Hint: see section 7.1.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on a good non-linear complimentary filter for attitude using quaternions.**
 
 
-### Step 3: Prediction Step ###
+### Scenario 8: Prediction Step ###
 
 In this next step you will be implementing the prediction step of your filter.
 
@@ -153,7 +151,7 @@ Another set of bad examples is shown below for having a `QVelXYStd` too large (f
 ***Success criteria:*** *This step doesn't have any specific measurable criteria being checked.*
 
 
-### Step 4: Magnetometer Update ###
+### Scenario 9: Magnetometer Update ###
 
 Up until now we've only used the accelerometer and gyro for our state estimation.  In this step, you will be adding the information from the magnetometer to improve your filter's performance in estimating the vehicle's heading.
 
@@ -174,7 +172,7 @@ Up until now we've only used the accelerometer and gyro for our state estimation
 **Hint: see section 7.3.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on the magnetometer update.**
 
 
-### Step 5: Closed Loop + GPS Update ###
+### Scenario 10: Closed Loop + GPS Update ###
 
 1. Run scenario `11_GPSUpdate`.  At the moment this scenario is using both an ideal estimator and and ideal IMU.  Even with these ideal elements, watch the position and velocity errors (bottom right). As you see they are drifting away, since GPS update is not yet implemented.
 
@@ -198,7 +196,7 @@ Up until now we've only used the accelerometer and gyro for our state estimation
 
 At this point, congratulations on having a working estimator!
 
-### Step 6: Adding Your Controller ###
+### Scenario 11: Adding Your Controller ###
 
 Up to this point, we have been working with a controller that has been relaxed to work with an estimated state instead of a real state.  So now, you will see how well your controller performs and de-tune your controller accordingly.
 
