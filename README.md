@@ -63,7 +63,7 @@ Outline:
  - [Scenarios 8 and 9: Prediction Step](#scenarios-8-and-9-prediction-step)
  - [Scenario 10: Magnetometer Update](#scenario-10-magnetometer-update)
  - [Scenario 11: Closed Loop + GPS Update](#scenario-11-closed-loop--gps-update)
- - [Scenario 12: Adding Your Controller](#scenario-12-adding-your-controller)
+ - [Scenario 11: Adding Your Controller](#scenario-11-adding-your-controller)
 
 
 
@@ -150,17 +150,13 @@ Passing all scenarios stated above indicates a working estimator.
 
 ### Scenario 12: Adding Your Controller ###
 
-Up to this point, we have been working with a controller that has been relaxed to work with an estimated state instead of a real state.  So now, you will see how well your controller performs and de-tune your controller accordingly.
+Instead of using a [controller](https://github.com/l0g1c-80m8/3d-drone-estimation/commit/88abfc87b23313fbad6d972854b4f9bc5bf2dac5) relaxed to work with estimated state, the controller from the [controls repository](https://github.com/l0g1c-80m8/3d-drone-controller/blob/develop/src/QuadControl.cpp) is used now in the same scenario. The parameters in [`QuadControlParams.txt`](config/QuadControlParams.txt) are tuned here to work with the estimator developed thus far. The same scenario 11 is run where the following result is observed:
+![scenario11-result-2](images/scenario11-result-2.png)
 
-1. Replace `QuadController.cpp` with the controller you wrote in the last project.
-
-2. Replace `QuadControlParams.txt` with the control parameters you came up with in the last project.
-
-3. Run scenario `11_GPSUpdate`. If your controller crashes immediately do not panic. Flying from an estimated state (even with ideal sensors) is very different from flying with ideal pose. You may need to de-tune your controller. Decrease the position and velocity gains (we’ve seen about 30% detuning being effective) to stabilize it.  Your goal is to once again complete the entire simulation cycle with an estimated position error of < 1m.
-
-**Hint: you may find it easiest to do your de-tuning as a 2 step process by reverting to ideal sensors and de-tuning under those conditions first.**
-
-***Success criteria:*** *Your objective is to complete the entire simulation cycle with estimated position error of < 1m.*
+along with the PASS message for the test:
+```
+PASS: ABS(Quad.Est.E.Pos) was less than 1.000000 for at least 20.000000 seconds
+```
 
 ## Authors ##
 
