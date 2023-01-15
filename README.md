@@ -103,43 +103,15 @@ PASS: ABS(Quad.Est.E.MaxEuler) was less than 0.100000 for at least 3.000000 seco
 
 ### Scenario 8: Prediction Step ###
 
-In this next step you will be implementing the prediction step of your filter.
+Here the prediction step of the filter is checked.
 
-
-1. Run scenario `08_PredictState`.  This scenario is configured to use a perfect IMU (only an IMU). Due to the sensitivity of double-integration to attitude errors, we've made the accelerometer update very insignificant (`QuadEstimatorEKF.attitudeTau = 100`).  The plots on this simulation show element of your estimated state and that of the true state.  At the moment you should see that your estimated state does not follow the true state.
-
-2. In `QuadEstimatorEKF.cpp`, implement the state prediction step in the `PredictState()` functon. If you do it correctly, when you run scenario `08_PredictState` you should see the estimator state track the actual state, with only reasonably slow drift, as shown in the figure below:
-
-![predict drift](images/predict-slow-drift.png)
-
-3. Now let's introduce a realistic IMU, one with noise.  Run scenario `09_PredictionCov`. You will see a small fleet of quadcopter all using your prediction code to integrate forward. You will see two plots:
-   - The top graph shows 10 (prediction-only) position X estimates
-   - The bottom graph shows 10 (prediction-only) velocity estimates
-You will notice however that the estimated covariance (white bounds) currently do not capture the growing errors.
-
-4. In `QuadEstimatorEKF.cpp`, calculate the partial derivative of the body-to-global rotation matrix in the function `GetRbgPrime()`.  Once you have that function implement, implement the rest of the prediction step (predict the state covariance forward) in `Predict()`.
-
-**Hint: see section 7.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on the the transition model and the partial derivatives you may need**
-
-**Hint: When it comes to writing the function for GetRbgPrime, make sure to triple check you've set all the correct parts of the matrix.**
-
-**Hint: recall that the control input is the acceleration!**
-
-5. Run your covariance prediction and tune the `QPosXYStd` and the `QVelXYStd` process parameters in `QuadEstimatorEKF.txt` to try to capture the magnitude of the error you see. Note that as error grows our simplified model will not capture the real error dynamics (for example, specifically, coming from attitude errors), therefore  try to make it look reasonable only for a relatively short prediction period (the scenario is set for one second).  A good solution looks as follows:
-
-![good covariance](images/predict-good-cov.png)
-
-Looking at this result, you can see that in the first part of the plot, our covariance (the white line) grows very much like the data.
-
-If we look at an example with a `QPosXYStd` that is much too high (shown below), we can see that the covariance no longer grows in the same way as the data.
-
-![bad x covariance](images/bad-x-sigma.PNG)
-
-Another set of bad examples is shown below for having a `QVelXYStd` too large (first) and too small (second).  As you can see, once again, our covariances in these cases no longer model the data well.
-
-![bad vx cov large](images/bad-vx-sigma.PNG)
-
-![bad vx cov small](images/bad-vx-sigma-low.PNG)
+There are four steps to take here:
+1. [```PredictState()```](src/QuadEstimatorEKF.cpp#L174): Here the state prediction step is implemented. Here the accelerations, current state and vehicle attitude angles are used to predict the forward state of the vehicle. After completing this step, it is observed that the estimator state tracks the actual state, with only reasonably slow drift:
+![scenario8-result](images/scenario8-result.png)
+2. [```GetRbgPrime()```](src/QuadEstimatorEKF.cpp#L209): Here the partial derivative of the Rbg rotation matrix with respect to yaw is calculated, called the ```RbgPrime``` matrix to be used later in the next step. This function implements the matrix calculation as shown in [equation 52](https://www.overleaf.com/project/5c34caab7ecefc04087273b9).
+3. [```Predict()```](src/QuadEstimatorEKF.cpp#L264): Here the calculation of current covariance forwarded by time dt is done using the accelerations and body rates as input according to [equation 51](https://www.overleaf.com/project/5c34caab7ecefc04087273b9) using the ```RbgPrime``` matrix calculated in step 2 above.
+4. Finally, the parameters [```QPosXYStd``` and ```QVelXYStd```](config/QuadEstimatorEKF.txt) are tuned to get the covariance (white line) grow like the data. It should look as below:
+![scenario9-result](images/scenario9-result.png)
 
 ***Success criteria:*** *This step doesn't have any specific measurable criteria being checked.*
 
