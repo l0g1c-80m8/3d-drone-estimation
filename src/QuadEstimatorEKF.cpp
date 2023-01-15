@@ -146,7 +146,7 @@ void QuadEstimatorEKF::UpdateTrueError(V3F truePos, V3F trueVel, Quaternion<floa
   velErrorMag = trueVel.dist(V3F(ekfState(3), ekfState(4), ekfState(5)));
 }
 
-VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, V3F gyro)
+VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, V3F gyro) const
 {
   assert(curState.size() == QUAD_EKF_NUM_STATES);
   VectorXf predictedState = curState;
@@ -171,6 +171,14 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
+  V3F attI = attitude.Rotate_BtoI(accel);
+  predictedState(0) = curState(0) + dt * curState(3);
+  predictedState(1) = curState(1) + dt * curState(4);
+  predictedState(2) = curState(2) + dt * curState(5);
+  predictedState(3) = curState(3) + dt * attI.x;
+  predictedState(4) = curState(4) + dt * attI.y;
+  predictedState(5) = curState(5) + dt * (attI.z - static_cast<float>(CONST_GRAVITY));
+  predictedState(6) = curState(6);
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
@@ -196,10 +204,19 @@ MatrixXf QuadEstimatorEKF::GetRbgPrime(float roll, float pitch, float yaw)
   // - You can also do some numerical partial derivatives in a unit test scheme to check 
   //   that your calculations are reasonable
 
-  ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+  ////////////////////////////// BEGIN RgbPrime ///////////////////////////
 
+  RbgPrime(0, 0) = -(cos(pitch) * sin(yaw));
+  RbgPrime(0, 1) = -(sin(roll) * sin(pitch) * sin(yaw)) - cos(pitch) * cos(yaw);
+  RbgPrime(0, 2) = -(cos(roll) * sin(pitch) * sin(yaw)) + sin(roll) * cos(yaw);
+  RbgPrime(1, 0) = cos(pitch) * cos(yaw);
+  RbgPrime(1, 1) = sin(roll) * sin(pitch) * cos(yaw) - cos(roll) * sin(yaw);
+  RbgPrime(1, 2) = cos(roll) * sin(pitch) * cos(yaw) + sin(roll) * sin(yaw);
+  RbgPrime(2,0) = 0.0f;
+  RbgPrime(2,1) = 0.0f;
+  RbgPrime(2,2) = 0.0f;
 
-  /////////////////////////////// END STUDENT CODE ////////////////////////////
+  /////////////////////////////// END RgbPrime ////////////////////////////
 
   return RbgPrime;
 }
@@ -242,10 +259,21 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   MatrixXf gPrime(QUAD_EKF_NUM_STATES, QUAD_EKF_NUM_STATES);
   gPrime.setIdentity();
 
-  ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+  ////////////////////////////// BEGIN Jacobian Calculation ///////////////////////////
 
+  gPrime(0, 3) = dt;
+  gPrime(1, 4) = dt;
+  gPrime(2, 5) = dt;
+  gPrime(3, 6) = (RbgPrime(0) * accel).sum() * dt;
+  gPrime(4, 6) = (RbgPrime(1) * accel).sum() * dt;
+  gPrime(5, 6) = (RbgPrime(2) * accel).sum() * dt;
 
-  /////////////////////////////// END STUDENT CODE ////////////////////////////
+  auto gPrimeT = gPrime;
+  gPrimeT.transposeInPlace();
+
+  ekfCov = gPrime * ekfCov * gPrimeT + Q;
+
+  /////////////////////////////// END Jacobian Calculation ////////////////////////////
 
   ekfState = newState;
 }
