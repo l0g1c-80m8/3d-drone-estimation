@@ -2,8 +2,8 @@
 
 This README is broken down into the following sections:
 
- - [Setup](#setup) - the environment and code setup required to get started and a brief overview of the project structure
- - [The Scenarios](#the-scenarios) - the scenarios that test the performance of the controller and estimators
+ - [Setup](#setup) - the environment and code setup required to get started and a brief overview of the project structure.
+ - [The Scenarios](#the-scenarios) - the scenarios that test the performance of the controller and estimators.
 
 
 ## Setup ##
