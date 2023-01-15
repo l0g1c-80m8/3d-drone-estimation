@@ -315,7 +315,7 @@ void QuadEstimatorEKF::UpdateFromMag(float magYaw)
   //  - Your current estimated yaw can be found in the state vector: ekfState(6)
   //  - Make sure to normalize the difference between your measured and estimated yaw
   //    (you don't want to update your yaw the long way around the circle)
-  //  - The magnetomer measurement covariance is available in member variable R_Mag
+  //  - The magnetometer measurement covariance is available in member variable R_Mag
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
 
@@ -349,7 +349,7 @@ void QuadEstimatorEKF::Update(VectorXf& z, MatrixXf& H, MatrixXf& R, VectorXf& z
   ekfCov = (eye - K*H)*ekfCov;
 }
 
-// Calculate the condition number of the EKF ovariance matrix (useful for numerical diagnostics)
+// Calculate the condition number of the EKF covariance matrix (useful for numerical diagnostics)
 // The condition number provides a measure of how similar the magnitudes of the error metric beliefs 
 // about the different states are. If the magnitudes are very far apart, numerical issues will start to come up.
 float QuadEstimatorEKF::CovConditionNumber() const
