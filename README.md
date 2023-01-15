@@ -60,10 +60,10 @@ Outline:
 
  - [Scenario 6: Sensor Noise](#scenario-6-sensor-noise)
  - [Scenario 7: Attitude Estimation](#scenario-7-attitude-estimation)
- - [Scenario 8: Prediction Step](#scenario-8-prediction-step)
- - [Scenario 9: Magnetometer Update](#scenario-9-magnetometer-update)
- - [Scenario 10: Closed Loop + GPS Update](#scenario-10-closed-loop--gps-update)
- - [Scenario 11: Adding Your Controller](#scenario-11-adding-your-controller)
+ - [Scenarios 8 and 9: Prediction Step](#scenarios-8-and-9-prediction-step)
+ - [Scenario 10: Magnetometer Update](#scenario-10-magnetometer-update)
+ - [Scenario 11: Closed Loop + GPS Update](#scenario-11-closed-loop--gps-update)
+ - [Scenario 12: Adding Your Controller](#scenario-12-adding-your-controller)
 
 
 
@@ -101,7 +101,7 @@ PASS: ABS(Quad.Est.E.MaxEuler) was less than 0.100000 for at least 3.000000 seco
 
 
 
-### Scenario 8: Prediction Step ###
+### Scenarios 8 and 9: Prediction Step ###
 
 Here the prediction step of the filter is checked.
 
@@ -116,7 +116,7 @@ There are four steps to take here:
 ***Success criteria:*** *This step doesn't have any specific measurable criteria being checked.*
 
 
-### Scenario 9: Magnetometer Update ###
+### Scenario 10: Magnetometer Update ###
 
 Up until now we've only used the accelerometer and gyro for our state estimation.  In this step, you will be adding the information from the magnetometer to improve your filter's performance in estimating the vehicle's heading.
 
@@ -137,7 +137,7 @@ Up until now we've only used the accelerometer and gyro for our state estimation
 **Hint: see section 7.3.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on the magnetometer update.**
 
 
-### Scenario 10: Closed Loop + GPS Update ###
+### Scenario 11: Closed Loop + GPS Update ###
 
 1. Run scenario `11_GPSUpdate`.  At the moment this scenario is using both an ideal estimator and and ideal IMU.  Even with these ideal elements, watch the position and velocity errors (bottom right). As you see they are drifting away, since GPS update is not yet implemented.
 
@@ -161,7 +161,7 @@ Up until now we've only used the accelerometer and gyro for our state estimation
 
 At this point, congratulations on having a working estimator!
 
-### Scenario 11: Adding Your Controller ###
+### Scenario 12: Adding Your Controller ###
 
 Up to this point, we have been working with a controller that has been relaxed to work with an estimated state instead of a real state.  So now, you will see how well your controller performs and de-tune your controller accordingly.
 
