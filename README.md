@@ -118,24 +118,17 @@ There are four steps to take here:
 
 ### Scenario 10: Magnetometer Update ###
 
-Up until now we've only used the accelerometer and gyro for our state estimation.  In this step, you will be adding the information from the magnetometer to improve your filter's performance in estimating the vehicle's heading.
+Here the magnetometer update is included. This requires 2 steps:
+1. The parameter [```QYawStd```](config/QuadEstimatorEKF.txt) is tuned to appropriately capture the magnitude of the drift: 
+![scenario10-partial](images/scenario10-partial.png)
+2. Next, the [```UpdateFromMag```](src/QuadEstimatorEKF.cpp#L321) is completed to include the magnetometer update following the equations described in [section 7.3.2](https://www.overleaf.com/read/vymfngphcccj).
+![scenario10-result](images/scenario10-result.png)
 
-1. Run scenario `10_MagUpdate`.  This scenario uses a realistic IMU, but the magnetometer update hasn’t been implemented yet. As a result, you will notice that the estimate yaw is drifting away from the real value (and the estimated standard deviation is also increasing).  Note that in this case the plot is showing you the estimated yaw error (`quad.est.e.yaw`), which is drifting away from zero as the simulation runs.  You should also see the estimated standard deviation of that state (white boundary) is also increasing.
-
-2. Tune the parameter `QYawStd` (`QuadEstimatorEKF.txt`) for the QuadEstimatorEKF so that it approximately captures the magnitude of the drift, as demonstrated here:
-
-![mag drift](images/mag-drift.png)
-
-3. Implement magnetometer update in the function `UpdateFromMag()`.  Once completed, you should see a resulting plot similar to this one:
-
-![mag good](images/mag-good-solution.png)
-
-***Success criteria:*** *Your goal is to both have an estimated standard deviation that accurately captures the error and maintain an error of less than 0.1rad in heading for at least 10 seconds of the simulation.*
-
-**Hint: after implementing the magnetometer update, you may have to once again tune the parameter `QYawStd` to better balance between the long term drift and short-time noise from the magnetometer.**
-
-**Hint: see section 7.3.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on the magnetometer update.**
-
+After the parameter (```QYawStd``) tuning test passes successfully:
+```
+PASS: ABS(Quad.Est.E.Yaw) was less than 0.120000 for at least 10.000000 seconds
+PASS: ABS(Quad.Est.E.Yaw-0.000000) was less than Quad.Est.S.Yaw for 59% of the time
+```
 
 ### Scenario 11: Closed Loop + GPS Update ###
 
