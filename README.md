@@ -124,7 +124,7 @@ Here the magnetometer update is included. This requires 2 steps:
 2. Next, the [```UpdateFromMag```](src/QuadEstimatorEKF.cpp#L321) is completed to include the magnetometer update following the equations described in [section 7.3.2](https://www.overleaf.com/read/vymfngphcccj).
 ![scenario10-result](images/scenario10-result.png)
 
-After the parameter (```QYawStd``) tuning test passes successfully:
+After the parameter (```QYawStd```) tuning test passes successfully:
 ```
 PASS: ABS(Quad.Est.E.Yaw) was less than 0.120000 for at least 10.000000 seconds
 PASS: ABS(Quad.Est.E.Yaw-0.000000) was less than Quad.Est.S.Yaw for 59% of the time
@@ -132,27 +132,21 @@ PASS: ABS(Quad.Est.E.Yaw-0.000000) was less than Quad.Est.S.Yaw for 59% of the t
 
 ### Scenario 11: Closed Loop + GPS Update ###
 
-1. Run scenario `11_GPSUpdate`.  At the moment this scenario is using both an ideal estimator and and ideal IMU.  Even with these ideal elements, watch the position and velocity errors (bottom right). As you see they are drifting away, since GPS update is not yet implemented.
+This is the final scenario to test. The steps taken here are:
+1. [```Quad.UseIdealEstimator```](config/11_GPSUpdate.txt) is set to zero to use the estimator implemented thus far.
+2. [```SimIMU.AccelStd``` and ```SimIMU.GyroStd```](config/11_GPSUpdate.txt) are commented (only for testing) to have a realistic model of an IMU to test the estimator with.
+3. The process noise model [parameters](config/QuadEstimatorEKF.txt) are tuned to capture the error observed with the estimated uncertainty of the filter. 
+4. [```UpdateFromGPS()```](src/QuadEstimatorEKF.cpp#L300) is completed to include GPS updates.
 
-2. Let's change to using your estimator by setting `Quad.UseIdealEstimator` to 0 in `config/11_GPSUpdate.txt`.  Rerun the scenario to get an idea of how well your estimator work with an ideal IMU.
+After all of these tasks, the scenario passes as seen below:
+![scenario11-result](images/scenario11-result.png)
 
-3. Now repeat with realistic IMU by commenting out these lines in `config/11_GPSUpdate.txt`:
+with the following message:
 ```
-#SimIMU.AccelStd = 0,0,0
-#SimIMU.GyroStd = 0,0,0
+ABS(Quad.Est.E.Pos) was less than 1.000000 for at least 20.000000 seconds
 ```
 
-4. Tune the process noise model in `QuadEstimatorEKF.txt` to try to approximately capture the error you see with the estimated uncertainty (standard deviation) of the filter.
-
-5. Implement the EKF GPS Update in the function `UpdateFromGPS()`.
-
-6. Now once again re-run the simulation.  Your objective is to complete the entire simulation cycle with estimated position error of < 1m (you’ll see a green box over the bottom graph if you succeed).  You may want to try experimenting with the GPS update parameters to try and get better performance.
-
-***Success criteria:*** *Your objective is to complete the entire simulation cycle with estimated position error of < 1m.*
-
-**Hint: see section 7.3.1 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on the GPS update.**
-
-At this point, congratulations on having a working estimator!
+Passing all scenarios stated above indicates a working estimator.
 
 ### Scenario 12: Adding Your Controller ###
 
