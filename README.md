@@ -86,22 +86,19 @@ PASS: ABS(Quad.IMU.AX-0.000000) was less than MeasuredStdDev_AccelXY for 70% of 
 
 ### Scenario 7: Attitude Estimation ###
 
-Now let's look at the first step to our state estimation: including information from our IMU.  In this step, you will be improving the complementary filter-type attitude filter with a better rate gyro attitude integration scheme.
+In this scenario, the [```UpdateFromIMU()```](src/QuadEstimatorEKF.cpp#L103) function is refactored to implement a better integration scheme that uses current attitude estimates:
 
-1. Run scenario `07_AttitudeEstimation`.  For this simulation, the only sensor used is the IMU and noise levels are set to 0 (see `config/07_AttitudeEstimation.txt` for all the settings for this simulation).  There are two plots visible in this simulation.
-   - The top graph is showing errors in each of the estimated Euler angles.
-   - The bottom shows the true Euler angles and the estimates.
-Observe that there’s quite a bit of error in attitude estimation.
+- First, the attitude estimates are converted to quaternion form from the Euler angles.
+- Then, the measurements in ```gyro``` are integrated for time ```dtIMU``` using the ```IntegrateBodyRate()``` function.
+- Finally, the Euler angles are recovered back from the quaternion form.
 
-2. In `QuadEstimatorEKF.cpp`, you will see the function `UpdateFromIMU()` contains a complementary filter-type attitude filter.  To reduce the errors in the estimated attitude (Euler Angles), implement a better rate gyro attitude integration scheme.  You should be able to reduce the attitude errors to get within 0.1 rad for each of the Euler angles, as shown in the screenshot below.
+![scenario7-result](images/scenario7-result.png)
 
-![attitude example](images/attitude-screenshot.png)
+The test passes successfully after implementing the new integration scheme:
+```
+PASS: ABS(Quad.Est.E.MaxEuler) was less than 0.100000 for at least 3.000000 seconds
+```
 
-In the screenshot above the attitude estimation using linear scheme (left) and using the improved nonlinear scheme (right). Note that Y axis on error is much greater on left.
-
-***Success criteria:*** *Your attitude estimator needs to get within 0.1 rad for each of the Euler angles for at least 3 seconds.*
-
-**Hint: see section 7.1.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on a good non-linear complimentary filter for attitude using quaternions.**
 
 
 ### Scenario 8: Prediction Step ###
